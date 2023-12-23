@@ -25,5 +25,11 @@ type ConfigEntity struct {
 }
 
 type EntranceEntity struct {
-	Logger logger.Abstraction
+	logger logger.Abstraction
+}
+
+func New(Logger logger.Abstraction) *EntranceEntity {
+	entity := new(EntranceEntity)
+	entity.logger = Logger
+	return entity
 }

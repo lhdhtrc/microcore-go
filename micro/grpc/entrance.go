@@ -75,10 +75,3 @@ func (s EntranceEntity) Server(handle func(server *grpc.Server)) {
 		}
 	}()
 }
-
-func New(config *EntranceEntity) *EntranceEntity {
-	entity := new(EntranceEntity)
-	entity.Logger = config.Logger
-
-	return entity
-}

@@ -2,3 +2,4 @@
 
 ### utils/object
 - FilterChangeValue
+- StructConvert

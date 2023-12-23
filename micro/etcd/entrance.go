@@ -20,14 +20,11 @@ type EntranceEntity struct {
 	Logger logger.Abstraction
 }
 
-func New(config *EntranceEntity) *EntranceEntity {
-	entity := new(EntranceEntity)
-	entity.Logger = config.Logger
+func Use(config *EntranceEntity) micro.Abstraction {
+	config.Ctx, config.Cancel = context.WithCancel(context.Background())
 
-	entity.Ctx, entity.Cancel = context.WithCancel(context.Background())
+	config.MaxRetry = config.MaxRetry | 5
+	config.RetryCount = 0
 
-	entity.MaxRetry = entity.MaxRetry | 5
-	entity.RetryCount = 0
-
-	return entity
+	return config
 }

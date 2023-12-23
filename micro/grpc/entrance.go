@@ -6,6 +6,7 @@ import (
 	"github.com/lhdhtrc/microservice-go/logger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"net"
 	"strings"
 	"time"
 )
@@ -48,6 +49,31 @@ func (s EntranceEntity) Dial(endpoint []string) *grpc.ClientConn {
 	}
 
 	return conn
+}
+
+func (s EntranceEntity) Server(handle func(server *grpc.Server)) {
+	logPrefix := "setup grpc server"
+	s.Logger.Info(fmt.Sprintf("%s %s %s", logPrefix, s.Address, "start ->"))
+
+	listen, err := net.Listen("tcp", s.Address)
+	if err != nil {
+		s.Logger.Error(fmt.Sprintf("%s %s", logPrefix, err.Error()))
+		return
+	}
+	server := grpc.NewServer()
+
+	/*-------------------------------------Register Microservice---------------------------------*/
+	handle(server)
+	/*-------------------------------------Register Microservice---------------------------------*/
+
+	s.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "register server done ->"))
+	go func() {
+		sErr := server.Serve(listen)
+		if sErr != nil {
+			s.Logger.Error(fmt.Sprintf("%s %s", logPrefix, sErr.Error()))
+			return
+		}
+	}()
 }
 
 func New(config *EntranceEntity) *EntranceEntity {

@@ -12,8 +12,13 @@ func Logger(config *logger.EntranceEntity, level string, message string) {
 			fmt.Printf("%s %s %s", time.Now().Format("2006-01-02 15:04:05"), level, message)
 		}
 
-		if config.Remote != nil {
-			config.Remote(level, message)
+		if config.UseRemote {
+			if config.Remote != nil {
+				config.Remote(level, message)
+			} else {
+				item := []string{level, message}
+				config.Temp = append(config.Temp, item)
+			}
 		}
 	}
 }

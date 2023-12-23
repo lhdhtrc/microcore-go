@@ -1,11 +1,9 @@
 package micro
 
-type RegisterAbstraction interface {
+type Abstraction interface {
 	Register(service string)
 	Deregister()
 	CreateLease()
-}
 
-type DiscoverAbstraction interface {
 	Watcher(config *[]DiscoverEntity)
 }

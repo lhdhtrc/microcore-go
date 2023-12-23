@@ -1,3 +1,5 @@
+![](http://minio.lhdht.cn/public/logo.jpg)
+
 ## Lhdht Microservice Golang Version
 
 ### module

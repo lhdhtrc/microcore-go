@@ -11,7 +11,7 @@ import (
 
 func (s EntranceEntity) SetupEtcd(config *ConfigEntity) *clientv3.Client {
 	logPrefix := "setup etcd"
-	s.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
+	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -31,17 +31,17 @@ func (s EntranceEntity) SetupEtcd(config *ConfigEntity) *clientv3.Client {
 		break
 	case 3: // tls
 		if config.Tls.CaCert == "" {
-			s.Logger.Error(fmt.Sprintf("%s %s", logPrefix, "no CA certificate found"))
+			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no CA certificate found"))
 			return nil
 		}
 
 		if config.Tls.ServerCert == "" {
-			s.Logger.Error(fmt.Sprintf("%s %s", logPrefix, "no server certificate found"))
+			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no server certificate found"))
 			return nil
 		}
 
 		if config.Tls.ServerCertKey == "" {
-			s.Logger.Error(fmt.Sprintf("%s %s", logPrefix, "no server certificate key found"))
+			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no server certificate key found"))
 			return nil
 		}
 
@@ -53,7 +53,7 @@ func (s EntranceEntity) SetupEtcd(config *ConfigEntity) *clientv3.Client {
 
 		tlsConfig, err := tlsInfo.ClientConfig()
 		if err != nil {
-			s.Logger.Error(err.Error())
+			s.logger.Error(err.Error())
 			return nil
 		}
 
@@ -67,11 +67,11 @@ func (s EntranceEntity) SetupEtcd(config *ConfigEntity) *clientv3.Client {
 
 	cli, err := clientv3.New(clientOptions)
 	if err != nil {
-		s.Logger.Error(fmt.Sprintf("%s %s", logPrefix, err.Error()))
+		s.logger.Error(fmt.Sprintf("%s %s", logPrefix, err.Error()))
 		return nil
 	}
 
-	s.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
+	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
 
 	return cli
 }

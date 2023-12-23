@@ -16,7 +16,7 @@ import (
 
 func (s EntranceEntity) SetupMysql(config *ConfigEntity, tables *[]interface{}) *gorm.DB {
 	logPrefix := "setup mysql"
-	s.Logger.Info(fmt.Sprintf("%s start ->", logPrefix))
+	s.logger.Info(fmt.Sprintf("%s start ->", logPrefix))
 
 	clientOptions := mysql.Config{
 		Net:       "tcp",
@@ -38,31 +38,31 @@ func (s EntranceEntity) SetupMysql(config *ConfigEntity, tables *[]interface{}) 
 		clientOptions.Passwd = config.Password
 
 		if config.Tls.CaCert == "" {
-			s.Logger.Error(fmt.Sprintf("%s %s", logPrefix, "no CA certificate found"))
+			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no CA certificate found"))
 			return nil
 		}
 
 		if config.Tls.ClientCert == "" {
-			s.Logger.Error(fmt.Sprintf("%s %s", logPrefix, "no client certificate found"))
+			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no client certificate found"))
 			return nil
 		}
 
 		if config.Tls.ClientCertKey == "" {
-			s.Logger.Error(fmt.Sprintf("%s %s", logPrefix, "no client certificate key found"))
+			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no client certificate key found"))
 			return nil
 		}
 
 		certPool := x509.NewCertPool()
 		CAFile, CAErr := os.ReadFile(config.Tls.CaCert)
 		if CAErr != nil {
-			s.Logger.Error(fmt.Sprintf("%s read %s error: %s", logPrefix, config.Tls.CaCert, CAErr.Error()))
+			s.logger.Error(fmt.Sprintf("%s read %s error: %s", logPrefix, config.Tls.CaCert, CAErr.Error()))
 			return nil
 		}
 		certPool.AppendCertsFromPEM(CAFile)
 
 		clientCert, clientCertErr := tls.LoadX509KeyPair(config.Tls.ClientCert, config.Tls.ClientCertKey)
 		if clientCertErr != nil {
-			s.Logger.Error(fmt.Sprintf("%s tls.LoadX509KeyPair err: %v", logPrefix, clientCertErr))
+			s.logger.Error(fmt.Sprintf("%s tls.LoadX509KeyPair err: %v", logPrefix, clientCertErr))
 			return nil
 		}
 
@@ -72,7 +72,7 @@ func (s EntranceEntity) SetupMysql(config *ConfigEntity, tables *[]interface{}) 
 		}
 
 		if err := mysql.RegisterTLSConfig("custom", &tlsConfig); err != nil {
-			s.Logger.Error(fmt.Sprintf("%s tls.LoadX509KeyPair err: %v", logPrefix, err.Error()))
+			s.logger.Error(fmt.Sprintf("%s tls.LoadX509KeyPair err: %v", logPrefix, err.Error()))
 			return nil
 		}
 
@@ -80,7 +80,7 @@ func (s EntranceEntity) SetupMysql(config *ConfigEntity, tables *[]interface{}) 
 		break
 	}
 
-	_default := logger.New(internal.NewWriter(log.New(os.Stdout, "\r\n", log.LstdFlags), s.Logger), logger.Config{
+	_default := logger.New(internal.NewWriter(log.New(os.Stdout, "\r\n", log.LstdFlags), s.logger), logger.Config{
 		SlowThreshold: 200 * time.Millisecond,
 		LogLevel:      logger.Info,
 		Colorful:      true,
@@ -109,7 +109,7 @@ func (s EntranceEntity) SetupMysql(config *ConfigEntity, tables *[]interface{}) 
 	d.SetMaxIdleConns(config.MaxIdleConnects)
 	d.SetConnMaxLifetime(time.Minute * time.Duration(config.ConnMaxLifeTime))
 
-	s.Logger.Info(fmt.Sprintf("%s success ->", logPrefix))
+	s.logger.Info(fmt.Sprintf("%s success ->", logPrefix))
 
 	return db
 }

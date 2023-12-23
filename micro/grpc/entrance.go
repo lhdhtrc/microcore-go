@@ -49,3 +49,10 @@ func (s EntranceEntity) Dial(endpoint []string) *grpc.ClientConn {
 
 	return conn
 }
+
+func New(config *EntranceEntity) *EntranceEntity {
+	entity := new(EntranceEntity)
+	entity.Logger = config.Logger
+
+	return entity
+}

@@ -1,4 +1,4 @@
-package pkg
+package array
 
 func Map[T any, R any](array []T, fn func(index int, item T) R) []R {
 	var temp []R

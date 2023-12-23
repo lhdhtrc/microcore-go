@@ -1,4 +1,4 @@
-package pkg
+package array
 
 func Unique[T any](array []T, fn func(index int, item T) string) []T {
 	set := make(map[string]T, len(array))

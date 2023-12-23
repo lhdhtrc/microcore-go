@@ -1,4 +1,4 @@
-package pkg
+package array
 
 func Filter[T any](array []T, fn func(index int, item T) bool) []T {
 	var temp []T

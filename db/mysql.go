@@ -80,11 +80,14 @@ func (s EntranceEntity) SetupMysql(config *ConfigEntity, tables *[]interface{}) 
 		break
 	}
 
-	_default := logger.New(internal.NewWriter(log.New(os.Stdout, "\r\n", log.LstdFlags), s.logger), logger.Config{
-		SlowThreshold: 200 * time.Millisecond,
-		LogLevel:      logger.Info,
-		Colorful:      true,
-	})
+	var _default logger.Interface
+	if config.LoggerEnable {
+		_default = logger.New(internal.NewWriter(log.New(os.Stdout, "\r\n", log.LstdFlags), s.logger), logger.Config{
+			SlowThreshold: 200 * time.Millisecond,
+			LogLevel:      logger.Info,
+			Colorful:      true,
+		})
+	}
 	db, _oe := gorm.Open(mysql2.Open(clientOptions.FormatDSN()), &gorm.Config{
 		SkipDefaultTransaction: config.SkipDefaultTransaction,
 		PrepareStmt:            config.PrepareStmt,

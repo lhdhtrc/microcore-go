@@ -8,7 +8,8 @@ import (
 )
 
 type EntranceEntity struct {
-	*micro.ConfigEntity
+	Config *micro.ConfigEntity
+
 	RetryCount uint32
 
 	Ctx    context.Context
@@ -23,7 +24,7 @@ type EntranceEntity struct {
 func Use(config *EntranceEntity) micro.Abstraction {
 	config.Ctx, config.Cancel = context.WithCancel(context.Background())
 
-	config.MaxRetry = config.MaxRetry | 5
+	config.Config.MaxRetry = config.Config.MaxRetry | 5
 	config.RetryCount = 0
 
 	return config

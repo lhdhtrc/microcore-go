@@ -55,14 +55,14 @@ func (s EntranceEntity) Watcher(config *[]micro.DiscoverEntity) {
 					switch e.Type {
 					// PUT，新增或替换
 					case 0:
-						temp := append(s.Service[key], val.Endpoints)
-						s.Service[key] = array.Unique[string](temp, func(index int, item string) string {
+						temp := append(s.Config.Service[key], val.Endpoints)
+						s.Config.Service[key] = array.Unique[string](temp, func(index int, item string) string {
 							return item
 						})
 						s.Logger.Success(fmt.Sprintf("%s %s put endpoint, key: %s, endpoint: %s", logPrefix, val.Name, key, val.Endpoints))
 					// DELETE
 					case 1:
-						s.Service[key] = array.Filter(s.Service[val.Name], func(index int, item string) bool {
+						s.Config.Service[key] = array.Filter(s.Config.Service[val.Name], func(index int, item string) bool {
 							return item != val.Endpoints
 						})
 						s.Logger.Warning(fmt.Sprintf("%s %s delete endpoint, key: %s, endpoint: %s", logPrefix, val.Name, key, val.Endpoints))
@@ -74,13 +74,13 @@ func (s EntranceEntity) Watcher(config *[]micro.DiscoverEntity) {
 }
 
 // initService etcd service init
-func initService(prefix string, config *EntranceEntity) {
+func initService(prefix string, options *EntranceEntity) {
 	logPrefix := "service discover init service"
-	config.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
+	options.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 
-	res, rErr := config.Cli.KV.Get(config.Ctx, prefix, clientv3.WithPrefix())
+	res, rErr := options.Cli.KV.Get(options.Ctx, prefix, clientv3.WithPrefix())
 	if rErr != nil {
-		config.Logger.Error(fmt.Sprintf("%s %s", logPrefix, rErr.Error()))
+		options.Logger.Error(fmt.Sprintf("%s %s", logPrefix, rErr.Error()))
 		return
 	}
 
@@ -89,7 +89,7 @@ func initService(prefix string, config *EntranceEntity) {
 
 		var val micro.ValueEntity
 		if err := json.Unmarshal(item.Value, &val); err != nil {
-			config.Logger.Error(fmt.Sprintf("%s %s", logPrefix, err.Error()))
+			options.Logger.Error(fmt.Sprintf("%s %s", logPrefix, err.Error()))
 			return
 		}
 
@@ -97,11 +97,11 @@ func initService(prefix string, config *EntranceEntity) {
 		st = st[:len(st)-1]
 		key = strings.Join(st, "/")
 
-		temp := append(config.Service[key], val.Endpoints)
-		config.Service[key] = array.Unique[string](temp, func(index int, item string) string {
+		temp := append(options.Config.Service[key], val.Endpoints)
+		options.Config.Service[key] = array.Unique[string](temp, func(index int, item string) string {
 			return item
 		})
 	}
 
-	config.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
+	options.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
 }

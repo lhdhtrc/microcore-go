@@ -13,10 +13,10 @@ import (
 
 // Register etcd service register
 func (s EntranceEntity) Register(service string) {
-	key := fmt.Sprintf("/microservice/%s/%s/%d", s.Namespace, service, s.Lease)
+	key := fmt.Sprintf("/microservice/%s/%s/%d", s.Config.Namespace, service, s.Lease)
 	val, _ := json.Marshal(micro.ValueEntity{
 		Name:      service,
-		Endpoints: s.Address,
+		Endpoints: s.Config.Address,
 	})
 	_, err := s.Cli.Put(s.Ctx, key, string(val), clientv3.WithLease(s.Lease))
 	if err != nil {
@@ -34,7 +34,7 @@ func (s EntranceEntity) Deregister() {
 	}
 	s.Logger.Info("revoke service lease success")
 
-	key := fmt.Sprintf("/microservice/%s", s.Namespace)
+	key := fmt.Sprintf("/microservice/%s", s.Config.Namespace)
 	res, rErr := s.Cli.KV.Get(s.Ctx, key, clientv3.WithPrefix(), clientv3.WithKeysOnly())
 	if rErr != nil {
 		s.Logger.Error(rErr.Error())
@@ -82,11 +82,11 @@ func (s EntranceEntity) CreateLease() {
 		//}
 		for range kac {
 		}
-		if s.RetryCount < s.MaxRetry {
+		if s.RetryCount < s.Config.MaxRetry {
 			time.Sleep(5 * time.Second)
 
 			s.RetryCount++
-			s.Logger.Info(fmt.Sprintf("retry create lease: %d", s.MaxRetry))
+			s.Logger.Info(fmt.Sprintf("retry create lease: %d", s.Config.MaxRetry))
 			s.CreateLease()
 		}
 		s.Logger.Info("microservice stop lease alive success")

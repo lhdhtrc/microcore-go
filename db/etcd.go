@@ -35,12 +35,12 @@ func (s EntranceEntity) SetupEtcd(config *ConfigEntity) *clientv3.Client {
 			return nil
 		}
 
-		if config.Tls.ServerCert == "" {
+		if config.Tls.ClientCert == "" {
 			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no server certificate found"))
 			return nil
 		}
 
-		if config.Tls.ServerCertKey == "" {
+		if config.Tls.ClientCertKey == "" {
 			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no server certificate key found"))
 			return nil
 		}

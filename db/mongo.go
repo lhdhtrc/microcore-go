@@ -83,16 +83,18 @@ func (s EntranceEntity) SetupMongo(config *ConfigEntity) *mongo.Database {
 	clientOptions.SetMaxPoolSize(uint64(config.MaxIdleConnects))
 	clientOptions.SetMaxConnIdleTime(time.Second * time.Duration(config.MaxIdleConnects))
 
-	clientOptions.Monitor = &event.CommandMonitor{
-		Started: func(ctx context.Context, event *event.CommandStartedEvent) {
-			s.logger.Mongo(fmt.Sprintf("[MongoDB][RequestID:%d][database:%s] %s\n", event.RequestID, event.DatabaseName, event.Command))
-		},
-		Succeeded: func(ctx context.Context, event *event.CommandSucceededEvent) {
-			s.logger.Mongo(fmt.Sprintf("[MongoDB][RequestID:%d] [%s] %s\n", event.RequestID, event.Duration.String(), event.Reply))
-		},
-		Failed: func(ctx context.Context, event *event.CommandFailedEvent) {
-			s.logger.Mongo(fmt.Sprintf("[MongoDB][RequestID:%d] [%s] %s\n", event.RequestID, event.Duration.String(), event.Failure))
-		},
+	if config.LoggerEnable {
+		clientOptions.Monitor = &event.CommandMonitor{
+			Started: func(ctx context.Context, event *event.CommandStartedEvent) {
+				s.logger.Info(fmt.Sprintf("[MongoDB][RequestID:%d][database:%s] %s\n", event.RequestID, event.DatabaseName, event.Command))
+			},
+			Succeeded: func(ctx context.Context, event *event.CommandSucceededEvent) {
+				s.logger.Success(fmt.Sprintf("[MongoDB][RequestID:%d] [%s] %s\n", event.RequestID, event.Duration.String(), event.Reply))
+			},
+			Failed: func(ctx context.Context, event *event.CommandFailedEvent) {
+				s.logger.Error(fmt.Sprintf("[MongoDB][RequestID:%d] [%s] %s\n", event.RequestID, event.Duration.String(), event.Failure))
+			},
+		}
 	}
 
 	client, cErr := mongo.Connect(ctx, &clientOptions)

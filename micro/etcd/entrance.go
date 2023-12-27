@@ -22,11 +22,13 @@ type EntranceEntity struct {
 	Logger logger.Abstraction
 }
 
-func Use(config *EntranceEntity) micro.Abstraction {
-	config.Ctx, config.Cancel = context.WithCancel(context.Background())
+func New(options *EntranceEntity) micro.Abstraction {
+	options.Ctx, options.Cancel = context.WithCancel(context.Background())
 
-	config.Config.MaxRetry = config.Config.MaxRetry | 5
-	config.RetryCount = 0
+	options.Config.MaxRetry = options.Config.MaxRetry | 5
+	options.Config.TTL = options.Config.TTL | 5
 
-	return config
+	options.RetryCount = 0
+
+	return options
 }

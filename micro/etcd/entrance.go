@@ -11,6 +11,7 @@ type EntranceEntity struct {
 	Config *micro.ConfigEntity
 
 	RetryCount uint32
+	Service    *map[string][]string
 
 	Ctx    context.Context
 	Cancel context.CancelFunc

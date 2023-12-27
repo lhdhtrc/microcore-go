@@ -5,5 +5,5 @@ type Abstraction interface {
 	Deregister()
 	CreateLease()
 
-	Watcher(config *[]DiscoverEntity, service *map[string][]string)
+	Watcher(config *[]DiscoverEntity)
 }

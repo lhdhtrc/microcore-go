@@ -46,8 +46,8 @@ func (s EntranceEntity) SetupEtcd(config *ConfigEntity) *clientv3.Client {
 		}
 
 		tlsInfo := transport.TLSInfo{
-			CertFile:      config.Tls.ServerCert,
-			KeyFile:       config.Tls.ServerCertKey,
+			CertFile:      config.Tls.ClientCert,
+			KeyFile:       config.Tls.ClientCertKey,
 			TrustedCAFile: config.Tls.CaCert,
 		}
 

@@ -61,7 +61,7 @@ func (s EntranceEntity) CreateLease() {
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(s.Config.TTL)*time.Second)
 	defer cancel()
 
 	grant, ge := s.Cli.Grant(ctx, 5)

@@ -11,7 +11,7 @@ import (
 )
 
 // Watcher etcd service watcher
-func (s EntranceEntity) Watcher(config *[]micro.DiscoverEntity) {
+func (s EntranceEntity) Watcher(config *[]micro.DiscoverEntity, service *map[string][]string) {
 	logPrefix := "[service_endpoint_change] service"
 	for _, row := range *config {
 		prefix := []string{"/microservice"}
@@ -23,7 +23,7 @@ func (s EntranceEntity) Watcher(config *[]micro.DiscoverEntity) {
 			}
 		}
 
-		initService(strings.Join(prefix, "/"), &s)
+		initService(strings.Join(prefix, "/"), &s, service)
 
 		wc := s.Cli.Watch(s.Ctx, strings.Join(prefix, "/"), clientv3.WithPrefix(), clientv3.WithPrevKV())
 		go func() {
@@ -55,14 +55,14 @@ func (s EntranceEntity) Watcher(config *[]micro.DiscoverEntity) {
 					switch e.Type {
 					// PUT，新增或替换
 					case 0:
-						temp := append(s.Config.Service[key], val.Endpoints)
-						s.Config.Service[key] = array.Unique[string](temp, func(index int, item string) string {
+						temp := append((*service)[key], val.Endpoints)
+						(*service)[key] = array.Unique[string](temp, func(index int, item string) string {
 							return item
 						})
 						s.Logger.Success(fmt.Sprintf("%s %s put endpoint, key: %s, endpoint: %s", logPrefix, val.Name, key, val.Endpoints))
 					// DELETE
 					case 1:
-						s.Config.Service[key] = array.Filter(s.Config.Service[val.Name], func(index int, item string) bool {
+						(*service)[key] = array.Filter((*service)[val.Name], func(index int, item string) bool {
 							return item != val.Endpoints
 						})
 						s.Logger.Warning(fmt.Sprintf("%s %s delete endpoint, key: %s, endpoint: %s", logPrefix, val.Name, key, val.Endpoints))
@@ -74,7 +74,7 @@ func (s EntranceEntity) Watcher(config *[]micro.DiscoverEntity) {
 }
 
 // initService etcd service init
-func initService(prefix string, options *EntranceEntity) {
+func initService(prefix string, options *EntranceEntity, service *map[string][]string) {
 	logPrefix := "service discover init service"
 	options.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 
@@ -97,8 +97,8 @@ func initService(prefix string, options *EntranceEntity) {
 		st = st[:len(st)-1]
 		key = strings.Join(st, "/")
 
-		temp := append(options.Config.Service[key], val.Endpoints)
-		options.Config.Service[key] = array.Unique[string](temp, func(index int, item string) string {
+		temp := append((*service)[key], val.Endpoints)
+		(*service)[key] = array.Unique[string](temp, func(index int, item string) string {
 			return item
 		})
 	}

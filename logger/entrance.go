@@ -5,8 +5,6 @@ type Abstraction interface {
 	Error(log string)
 	Success(log string)
 	Warning(log string)
-	Mysql(log string)
-	Mongo(log string)
 }
 
 type ConfigEntity struct {
@@ -21,6 +19,6 @@ type EntranceEntity struct {
 	Remote func(level string, message string) // Remote storage logs func
 }
 
-func Use(config *EntranceEntity) Abstraction {
+func New(config *EntranceEntity) Abstraction {
 	return config
 }

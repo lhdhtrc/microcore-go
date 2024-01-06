@@ -8,7 +8,7 @@ type Abstraction interface {
 }
 
 type Entity struct {
-	Level   uint
+	Level   uint32
 	Message string
 }
 

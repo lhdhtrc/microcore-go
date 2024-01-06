@@ -13,12 +13,14 @@ import (
 
 func (s EntranceEntity) RemoteCert(dir string, config *base.TLSEntity) {
 	logPrefix := "DownloadRemoteCert"
+	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
+
 	dirPath := fmt.Sprintf("dep/cert/%s", dir)
 
 	_, err := os.Stat(dirPath)
 	if os.IsNotExist(err) {
 		if e := os.MkdirAll(dirPath, 755); e != nil {
-			s.Logger.Error(fmt.Sprintf("%s mkdir path %s", logPrefix, e.Error()))
+			s.logger.Error(fmt.Sprintf("%s mkdir path %s", logPrefix, e.Error()))
 		}
 	}
 
@@ -32,12 +34,12 @@ func (s EntranceEntity) RemoteCert(dir string, config *base.TLSEntity) {
 			go func(url string) {
 				hRes, hErr := http.Get(url)
 				if hErr != nil {
-					s.Logger.Error(fmt.Sprintf("%s http get %s", logPrefix, hErr.Error()))
+					s.logger.Error(fmt.Sprintf("%s http get %s", logPrefix, hErr.Error()))
 					return
 				}
 				defer func(Body io.ReadCloser) {
 					if ce := Body.Close(); ce != nil {
-						s.Logger.Error(fmt.Sprintf("%s close http body %s", logPrefix, ce.Error()))
+						s.logger.Error(fmt.Sprintf("%s close http body %s", logPrefix, ce.Error()))
 					}
 				}(hRes.Body)
 
@@ -46,7 +48,7 @@ func (s EntranceEntity) RemoteCert(dir string, config *base.TLSEntity) {
 
 				bytes, _ := io.ReadAll(hRes.Body)
 				if re := os.WriteFile(file, bytes, 0666); re != nil {
-					s.Logger.Error(fmt.Sprintf("%s write error %s", logPrefix, re.Error()))
+					s.logger.Error(fmt.Sprintf("%s write error %s", logPrefix, re.Error()))
 					return
 				}
 
@@ -57,4 +59,6 @@ func (s EntranceEntity) RemoteCert(dir string, config *base.TLSEntity) {
 	}
 
 	wg.Wait()
+
+	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
 }

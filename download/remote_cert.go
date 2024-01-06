@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-func (s EntranceEntity) RemoteCert(dir string, config *base.TLSEntity) []string {
+func (s EntranceEntity) RemoteCert(dir string, config *base.TLSEntity) {
 	logPrefix := "DownloadRemoteCert"
 	dirPath := fmt.Sprintf("dep/cert/%s", dir)
 
@@ -24,7 +24,6 @@ func (s EntranceEntity) RemoteCert(dir string, config *base.TLSEntity) []string 
 
 	var wg sync.WaitGroup
 
-	var res []string
 	ref := reflect.ValueOf(config).Elem()
 	for i := 0; i < ref.NumField(); i++ {
 		t := ref.Field(i)
@@ -51,13 +50,11 @@ func (s EntranceEntity) RemoteCert(dir string, config *base.TLSEntity) []string 
 					return
 				}
 
-				res = append(res, file)
+				t.SetString(file)
 				wg.Done()
 			}(t.String())
 		}
 	}
 
 	wg.Wait()
-
-	return res
 }

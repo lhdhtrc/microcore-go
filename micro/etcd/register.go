@@ -78,7 +78,7 @@ func (s EntranceEntity) CreateLease() {
 
 	go func() {
 		//for v := range kac {
-		//	store.Use.Logger.Func.Info(fmt.Sprintf("microservice lease keepalive success, lease %d, ttl %d", v.ID, v.TTL))
+		//	s.Logger.Info(fmt.Sprintf("microservice lease keepalive success, lease %d, ttl %d", v.ID, v.TTL))
 		//}
 		for range kac {
 		}
@@ -91,6 +91,7 @@ func (s EntranceEntity) CreateLease() {
 		}
 		s.Logger.Info("microservice stop lease alive success")
 	}()
+	s.Logger.Info(fmt.Sprintf("Microservice lease id: %d", grant.ID))
 	s.Logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
 
 	s.Lease = grant.ID

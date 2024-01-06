@@ -6,26 +6,16 @@ import (
 	"github.com/lhdhtrc/microservice-go/micro"
 	"github.com/lhdhtrc/microservice-go/utils/array"
 	clientv3 "go.etcd.io/etcd/client/v3"
-	"reflect"
 	"strings"
 )
 
 // Watcher etcd service watcher
-func (s prototype) Watcher(config *[]micro.DiscoverEntity, service *map[string][]string) {
+func (s prototype) Watcher(config *[]string, service *map[string][]string) {
 	logPrefix := "[service_endpoint_change] service"
-	for _, row := range *config {
-		prefix := []string{"/microservice"}
-		value := reflect.ValueOf(row)
-		for i := 0; i < value.NumField(); i++ {
-			v := value.Field(i).String()
-			if v != "" {
-				prefix = append(prefix, v)
-			}
-		}
+	for _, prefix := range *config {
+		initService(prefix, &s, service)
 
-		initService(strings.Join(prefix, "/"), &s, service)
-
-		wc := s.cli.Watch(s.Ctx, strings.Join(prefix, "/"), clientv3.WithPrefix(), clientv3.WithPrevKV())
+		wc := s.cli.Watch(s.Ctx, prefix, clientv3.WithPrefix(), clientv3.WithPrevKV())
 		go func() {
 			for v := range wc {
 				for _, e := range v.Events {

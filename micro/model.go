@@ -12,9 +12,3 @@ type ValueEntity struct {
 	Name      string `json:"name"`
 	Endpoints string `json:"endpoints"`
 }
-
-type DiscoverEntity struct {
-	Gateway   string `json:"gateway"`
-	Namespace string `json:"namespace"`
-	Service   string `json:"service"`
-}

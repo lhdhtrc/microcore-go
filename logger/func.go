@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func logger(options *EntranceEntity, level string, val uint, message string) {
+func logger(options *EntranceEntity, level string, val uint32, message string) {
 	if options.Config.Enable {
 		if options.Config.Console {
 			fmt.Println(fmt.Sprintf("%s %s %s", time.Now().Format("2006-01-02 15:04:05"), level, message))

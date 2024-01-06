@@ -24,6 +24,8 @@ type EntranceEntity struct {
 	Remote func(log Entity) // Remote storage logs func
 }
 
-func New(config *EntranceEntity) Abstraction {
-	return config
+func New(config *ConfigEntity) *EntranceEntity {
+	entity := new(EntranceEntity)
+	entity.Config = *config
+	return entity
 }

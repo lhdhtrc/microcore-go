@@ -1,7 +1,7 @@
 package object
 
 import (
-	"microservice-go/utils/array"
+	"github.com/lhdhtrc/microservice-go/utils/array"
 	"reflect"
 )
 

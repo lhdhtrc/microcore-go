@@ -12,13 +12,13 @@ import (
 )
 
 // Register etcd service register
-func (s EntranceEntity) Register(service string) {
-	key := fmt.Sprintf("/microservice/%s/%s/%d", s.Config.Namespace, service, s.Lease)
+func (s prototype) Register(service string) {
+	key := fmt.Sprintf("/microservice/%s/%s/%d", s.Config.Namespace, service, s.lease)
 	val, _ := json.Marshal(micro.ValueEntity{
 		Name:      service,
 		Endpoints: s.Config.Address,
 	})
-	_, err := s.Cli.Put(s.Ctx, key, string(val), clientv3.WithLease(s.Lease))
+	_, err := s.cli.Put(s.Ctx, key, string(val), clientv3.WithLease(s.lease))
 	if err != nil {
 		s.logger.Error(err.Error())
 		return
@@ -27,22 +27,22 @@ func (s EntranceEntity) Register(service string) {
 }
 
 // Deregister etcd service deregister
-func (s EntranceEntity) Deregister() {
-	if _, err := s.Cli.Revoke(s.Ctx, s.Lease); err != nil {
+func (s prototype) Deregister() {
+	if _, err := s.cli.Revoke(s.Ctx, s.lease); err != nil {
 		s.logger.Error(err.Error())
 		return
 	}
 	s.logger.Info("revoke service lease success")
 
 	key := fmt.Sprintf("/microservice/%s", s.Config.Namespace)
-	res, rErr := s.Cli.KV.Get(s.Ctx, key, clientv3.WithPrefix(), clientv3.WithKeysOnly())
+	res, rErr := s.cli.KV.Get(s.Ctx, key, clientv3.WithPrefix(), clientv3.WithKeysOnly())
 	if rErr != nil {
 		s.logger.Error(rErr.Error())
 		return
 	}
 	for _, item := range res.Kvs {
-		if strings.Contains(string(item.Key), strconv.FormatInt(int64(s.Lease), 10)) {
-			if _, err := s.Cli.Delete(s.Ctx, key); err != nil {
+		if strings.Contains(string(item.Key), strconv.FormatInt(int64(s.lease), 10)) {
+			if _, err := s.cli.Delete(s.Ctx, key); err != nil {
 				s.logger.Error(err.Error())
 				continue
 			}
@@ -52,11 +52,11 @@ func (s EntranceEntity) Deregister() {
 }
 
 // CreateLease etcd create service instance lease
-func (s EntranceEntity) CreateLease() {
+func (s prototype) CreateLease() {
 	logPrefix := "create lease"
 	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 
-	if s.Cli == nil {
+	if s.cli == nil {
 		s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "etcd client not found"))
 		return
 	}
@@ -64,13 +64,13 @@ func (s EntranceEntity) CreateLease() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	grant, ge := s.Cli.Grant(ctx, int64(s.Config.TTL))
+	grant, ge := s.cli.Grant(ctx, int64(s.Config.TTL))
 	if ge != nil {
 		s.logger.Error(fmt.Sprintf("%s %s", logPrefix, ge.Error()))
 		return
 	}
 
-	kac, ke := s.Cli.KeepAlive(s.Ctx, grant.ID)
+	kac, ke := s.cli.KeepAlive(s.Ctx, grant.ID)
 	if ke != nil {
 		s.logger.Error(fmt.Sprintf("%s %s", logPrefix, ke.Error()))
 		return
@@ -94,5 +94,5 @@ func (s EntranceEntity) CreateLease() {
 	s.logger.Info(fmt.Sprintf("Microservice lease id: %d", grant.ID))
 	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
 
-	s.Lease = grant.ID
+	s.lease = grant.ID
 }

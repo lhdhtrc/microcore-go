@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-func (s EntranceEntity) ReadRemoteConfig(Source []string, Config []*interface{}) {
+func (s EntranceEntity) ReadRemoteConfig(Source []string, Config []interface{}) {
 	logPrefix := "ReadRemoteConfig"
 	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 

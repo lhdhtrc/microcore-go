@@ -8,7 +8,7 @@ import (
 func logger(options *EntranceEntity, level string, message string) {
 	if options.Config.Enable {
 		if options.Config.Console {
-			fmt.Printf("%s %s %s", time.Now().Format("2006-01-02 15:04:05"), level, message)
+			fmt.Println(fmt.Sprintf("%s %s %s", time.Now().Format("2006-01-02 15:04:05"), level, message))
 		}
 
 		if options.Config.UseRemote {

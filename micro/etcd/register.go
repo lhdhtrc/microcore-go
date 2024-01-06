@@ -34,7 +34,7 @@ func (s prototype) Deregister() {
 	}
 	s.logger.Info("revoke service lease success")
 
-	key := fmt.Sprintf("/microservice/%s", s.Config.Namespace)
+	key := fmt.Sprintf(s.Config.Namespace)
 	res, rErr := s.cli.KV.Get(s.Ctx, key, clientv3.WithPrefix(), clientv3.WithKeysOnly())
 	if rErr != nil {
 		s.logger.Error(rErr.Error())

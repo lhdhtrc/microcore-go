@@ -1,4 +1,4 @@
-package download
+package remote
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-func (s EntranceEntity) RemoteCert(dir string, config *base.TLSEntity) {
+func (s EntranceEntity) GetRemoteCert(dir string, config *base.TLSEntity) {
 	logPrefix := "DownloadRemoteCert"
 	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 

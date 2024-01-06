@@ -1,4 +1,4 @@
-package download
+package remote
 
 import "github.com/lhdhtrc/microservice-go/logger"
 

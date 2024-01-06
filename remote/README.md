@@ -1,5 +1,5 @@
 ## Lhdht Microservice Golang Version
 
-### download
-- RemoteCert
+### remote
+- GetRemoteCert
 - ReadRemoteConfig

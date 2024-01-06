@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-type OptionsEntity struct {
+type ConfigEntity struct {
 	Deploy  bool   `json:"deploy"`  // current service deploy mode: local area network or not
 	Address string `json:"address"` // current service deploy address
 }
@@ -20,7 +20,7 @@ type EntranceEntity struct {
 	logger logger.Abstraction
 }
 
-func (s EntranceEntity) Dial(endpoint []string, opt *OptionsEntity) *grpc.ClientConn {
+func (s EntranceEntity) Dial(endpoint []string, opt *ConfigEntity) *grpc.ClientConn {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 

@@ -19,16 +19,21 @@ type EntranceEntity struct {
 	Cli   *clientv3.Client
 	Lease clientv3.LeaseID
 
-	Logger logger.Abstraction
+	logger logger.Abstraction
 }
 
-func New(options *EntranceEntity) micro.Abstraction {
-	options.Ctx, options.Cancel = context.WithCancel(context.Background())
+func New(cli *clientv3.Client, logger logger.Abstraction, opt *micro.ConfigEntity) *EntranceEntity {
+	entity := new(EntranceEntity)
+	entity.Config = opt
 
-	options.Config.MaxRetry = options.Config.MaxRetry | 5
-	options.Config.TTL = options.Config.TTL | 5
+	entity.Cli = cli
+	entity.logger = logger
+	entity.Ctx, entity.Cancel = context.WithCancel(context.Background())
 
-	options.RetryCount = 0
+	entity.Config.MaxRetry = entity.Config.MaxRetry | 5
+	entity.Config.TTL = entity.Config.TTL | 5
 
-	return options
+	entity.RetryCount = 0
+
+	return entity
 }

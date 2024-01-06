@@ -7,6 +7,11 @@ type Abstraction interface {
 	Warning(log string)
 }
 
+type Entity struct {
+	Level   uint
+	Message string
+}
+
 type ConfigEntity struct {
 	Console   bool `json:"console" bson:"console" yaml:"console" mapstructure:"console"`             // Console whether to output logs on the console
 	Enable    bool `json:"enable" bson:"enable" yaml:"enable" mapstructure:"enable"`                 // Enable whether to enable logs
@@ -14,9 +19,9 @@ type ConfigEntity struct {
 }
 
 type EntranceEntity struct {
-	Config ConfigEntity                       // Config logger configs
-	Temp   [][]string                         // Temp storage logs
-	Remote func(level string, message string) // Remote storage logs func
+	Config ConfigEntity     // Config logger configs
+	Temp   []Entity         // Temp storage logs
+	Remote func(log Entity) // Remote storage logs func
 }
 
 func New(config *EntranceEntity) Abstraction {

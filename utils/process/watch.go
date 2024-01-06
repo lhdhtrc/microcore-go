@@ -7,7 +7,7 @@ import (
 	"syscall"
 )
 
-func Watch(handle func()) {
+func Watcher(handle func()) {
 	fmt.Println("----- watch process start -----")
 
 	ch := make(chan os.Signal, 1)

@@ -7,31 +7,31 @@ import (
 	clientv3 "go.etcd.io/etcd/client/v3"
 )
 
-type EntranceEntity struct {
+type prototype struct {
 	Config *micro.ConfigEntity
 
-	RetryCount uint32
+	retryCount uint32
 
-	Ctx    context.Context
-	Cancel context.CancelFunc
+	ctx    context.Context
+	cancel context.CancelFunc
 
-	Cli   *clientv3.Client
-	Lease clientv3.LeaseID
+	cli   *clientv3.Client
+	lease clientv3.LeaseID
 
 	logger logger.Abstraction
 }
 
-func New(cli *clientv3.Client, logger logger.Abstraction, config *micro.ConfigEntity) *EntranceEntity {
+func New(cli *clientv3.Client, logger logger.Abstraction, config *micro.ConfigEntity) micro.Abstraction {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	config.MaxRetry = config.MaxRetry | 5
 	config.TTL = config.TTL | 5
 
-	return &EntranceEntity{
+	return &prototype{
 		Config: config,
-		Ctx:    ctx,
-		Cancel: cancel,
-		Cli:    cli,
+		ctx:    ctx,
+		cancel: cancel,
+		cli:    cli,
 		logger: logger,
 	}
 }

@@ -10,12 +10,12 @@ import (
 )
 
 // Watcher etcd service watcher
-func (s EntranceEntity) Watcher(config *[]string, service *map[string][]string) {
+func (s *prototype) Watcher(config *[]string, service *map[string][]string) {
 	logPrefix := "[service_endpoint_change] service"
 	for _, prefix := range *config {
-		initService(prefix, &s, service)
+		initService(prefix, s, service)
 
-		wc := s.Cli.Watch(s.Ctx, prefix, clientv3.WithPrefix(), clientv3.WithPrevKV())
+		wc := s.cli.Watch(s.ctx, prefix, clientv3.WithPrefix(), clientv3.WithPrevKV())
 		go func() {
 			for v := range wc {
 				for _, e := range v.Events {
@@ -64,11 +64,11 @@ func (s EntranceEntity) Watcher(config *[]string, service *map[string][]string) 
 }
 
 // initService etcd service init
-func initService(prefix string, options *EntranceEntity, service *map[string][]string) {
+func initService(prefix string, options *prototype, service *map[string][]string) {
 	logPrefix := "service discover init service"
 	options.logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 
-	res, rErr := options.Cli.KV.Get(options.Ctx, prefix, clientv3.WithPrefix())
+	res, rErr := options.cli.KV.Get(options.ctx, prefix, clientv3.WithPrefix())
 	if rErr != nil {
 		options.logger.Error(fmt.Sprintf("%s %s", logPrefix, rErr.Error()))
 		return

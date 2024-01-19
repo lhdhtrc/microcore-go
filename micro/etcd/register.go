@@ -13,7 +13,7 @@ import (
 
 // Register etcd service register
 func (s prototype) Register(service string) {
-	key := fmt.Sprintf("/microservice/%s/%s/%d", s.Config.Namespace, service, s.lease)
+	key := fmt.Sprintf("%s/%s/%d", s.Config.Namespace, service, s.lease)
 	val, _ := json.Marshal(micro.ValueEntity{
 		Name:      service,
 		Endpoints: s.Config.Address,

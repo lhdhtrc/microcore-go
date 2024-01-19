@@ -16,7 +16,7 @@ type prototype struct {
 	Cancel context.CancelFunc
 
 	cli   *clientv3.Client
-	lease clientv3.LeaseID
+	lease *clientv3.LeaseID
 
 	logger logger.Abstraction
 }

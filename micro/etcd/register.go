@@ -18,7 +18,7 @@ func (s prototype) Register(service string) {
 		Name:      service,
 		Endpoints: s.Config.Address,
 	})
-	_, err := s.cli.Put(s.Ctx, key, string(val), clientv3.WithLease(s.lease))
+	_, err := s.cli.Put(s.Ctx, key, string(val), clientv3.WithLease(*s.lease))
 	if err != nil {
 		s.logger.Error(err.Error())
 		return
@@ -28,7 +28,7 @@ func (s prototype) Register(service string) {
 
 // Deregister etcd service deregister
 func (s prototype) Deregister() {
-	if _, err := s.cli.Revoke(s.Ctx, s.lease); err != nil {
+	if _, err := s.cli.Revoke(s.Ctx, *s.lease); err != nil {
 		s.logger.Error(err.Error())
 		return
 	}
@@ -41,7 +41,7 @@ func (s prototype) Deregister() {
 		return
 	}
 	for _, item := range res.Kvs {
-		if strings.Contains(string(item.Key), strconv.FormatInt(int64(s.lease), 10)) {
+		if strings.Contains(string(item.Key), strconv.FormatInt(int64(*s.lease), 10)) {
 			if _, err := s.cli.Delete(s.Ctx, key); err != nil {
 				s.logger.Error(err.Error())
 				continue
@@ -94,5 +94,5 @@ func (s prototype) CreateLease() {
 	s.logger.Info(fmt.Sprintf("Microservice lease id: %d", grant.ID))
 	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
 
-	s.lease = grant.ID
+	s.lease = &grant.ID
 }

@@ -25,18 +25,18 @@ func logger(options *EntranceEntity, level string, val uint32, message string) {
 	}
 }
 
-func (s EntranceEntity) Info(log string) {
-	logger(&s, "info", 1, log)
+func (s *EntranceEntity) Info(log string) {
+	logger(s, "info", 1, log)
 }
 
-func (s EntranceEntity) Error(log string) {
-	logger(&s, "error", 2, log)
+func (s *EntranceEntity) Error(log string) {
+	logger(s, "error", 2, log)
 }
 
-func (s EntranceEntity) Success(log string) {
-	logger(&s, "success", 3, log)
+func (s *EntranceEntity) Success(log string) {
+	logger(s, "success", 3, log)
 }
 
-func (s EntranceEntity) Warning(log string) {
-	logger(&s, "warning", 4, log)
+func (s *EntranceEntity) Warning(log string) {
+	logger(s, "warning", 4, log)
 }

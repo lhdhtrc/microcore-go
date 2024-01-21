@@ -17,10 +17,11 @@ type ConfigEntity struct {
 }
 
 type EntranceEntity struct {
+	Server *grpc.Server
 	logger logger.Abstraction
 }
 
-func (s EntranceEntity) Dial(endpoint []string, opt *ConfigEntity) *grpc.ClientConn {
+func (s *EntranceEntity) Dial(endpoint []string, opt *ConfigEntity) *grpc.ClientConn {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
@@ -54,14 +55,14 @@ func (s EntranceEntity) Dial(endpoint []string, opt *ConfigEntity) *grpc.ClientC
 	return conn
 }
 
-func (s EntranceEntity) Server(handle func(server *grpc.Server), address string) *grpc.Server {
+func (s *EntranceEntity) CreateServer(handle func(server *grpc.Server), address string) {
 	logPrefix := "setup grpc server"
 	s.logger.Info(fmt.Sprintf("%s %s %s", logPrefix, address, "start ->"))
 
 	listen, err := net.Listen("tcp", address)
 	if err != nil {
 		s.logger.Error(fmt.Sprintf("%s %s", logPrefix, err.Error()))
-		return nil
+		return
 	}
 	server := grpc.NewServer()
 
@@ -78,7 +79,7 @@ func (s EntranceEntity) Server(handle func(server *grpc.Server), address string)
 		}
 	}()
 
-	return server
+	s.Server = server
 }
 
 func New(Logger logger.Abstraction) *EntranceEntity {

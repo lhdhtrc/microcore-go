@@ -66,10 +66,6 @@ func (s *EntranceEntity) CreateServer(handle func(server *grpc.Server), address 
 	}
 	server := grpc.NewServer()
 
-	/*-------------------------------------Register Microservice---------------------------------*/
-	handle(server)
-	/*-------------------------------------Register Microservice---------------------------------*/
-
 	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "register server done ->"))
 	go func() {
 		sErr := server.Serve(listen)

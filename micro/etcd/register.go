@@ -67,12 +67,14 @@ func (s *prototype) CreateLease() {
 	grant, ge := s.cli.Grant(ctx, int64(s.Config.TTL))
 	if ge != nil {
 		s.logger.Error(fmt.Sprintf("%s %s", logPrefix, ge.Error()))
+		retry(s)
 		return
 	}
 
 	kac, ke := s.cli.KeepAlive(s.ctx, grant.ID)
 	if ke != nil {
 		s.logger.Error(fmt.Sprintf("%s %s", logPrefix, ke.Error()))
+		retry(s)
 		return
 	}
 
@@ -82,20 +84,7 @@ func (s *prototype) CreateLease() {
 		//}
 		for range kac {
 		}
-		fmt.Println(s.retryCount, s.Config.MaxRetry)
-		if s.retryCount < s.Config.MaxRetry {
-			if s.retryBefore != nil {
-				s.retryBefore()
-			}
-			time.Sleep(5 * time.Second)
-
-			s.retryCount++
-			s.logger.Info(fmt.Sprintf("retry create lease: %d/%d", s.retryCount, s.Config.MaxRetry))
-			s.CreateLease()
-			if s.retryAfter != nil {
-				s.retryAfter()
-			}
-		}
+		retry(s)
 		s.logger.Info("microservice stop lease alive success")
 	}()
 	s.logger.Info(fmt.Sprintf("Microservice lease id: %d", grant.ID))
@@ -109,4 +98,21 @@ func (s *prototype) WithRetryBefore(handle func()) {
 }
 func (s *prototype) WithRetryAfter(handle func()) {
 	s.retryAfter = handle
+}
+
+func retry(s *prototype) {
+	fmt.Println(s.retryCount, s.Config.MaxRetry)
+	if s.retryCount < s.Config.MaxRetry {
+		if s.retryBefore != nil {
+			s.retryBefore()
+		}
+		time.Sleep(5 * time.Second)
+
+		s.retryCount++
+		s.logger.Info(fmt.Sprintf("retry create lease: %d/%d", s.retryCount, s.Config.MaxRetry))
+		s.CreateLease()
+		if s.retryAfter != nil {
+			s.retryAfter()
+		}
+	}
 }

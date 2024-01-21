@@ -55,7 +55,7 @@ func (s *EntranceEntity) Dial(endpoint []string, opt *ConfigEntity) *grpc.Client
 	return conn
 }
 
-func (s *EntranceEntity) CreateServer(handle func(server *grpc.Server), address string) {
+func (s *EntranceEntity) CreateServer(address string) {
 	logPrefix := "setup grpc server"
 	s.logger.Info(fmt.Sprintf("%s %s %s", logPrefix, address, "start ->"))
 

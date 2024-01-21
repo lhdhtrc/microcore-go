@@ -54,14 +54,14 @@ func (s EntranceEntity) Dial(endpoint []string, opt *ConfigEntity) *grpc.ClientC
 	return conn
 }
 
-func (s EntranceEntity) Server(handle func(server *grpc.Server), address string) {
+func (s EntranceEntity) Server(handle func(server *grpc.Server), address string) *grpc.Server {
 	logPrefix := "setup grpc server"
 	s.logger.Info(fmt.Sprintf("%s %s %s", logPrefix, address, "start ->"))
 
 	listen, err := net.Listen("tcp", address)
 	if err != nil {
 		s.logger.Error(fmt.Sprintf("%s %s", logPrefix, err.Error()))
-		return
+		return nil
 	}
 	server := grpc.NewServer()
 
@@ -77,6 +77,8 @@ func (s EntranceEntity) Server(handle func(server *grpc.Server), address string)
 			return
 		}
 	}()
+
+	return server
 }
 
 func New(Logger logger.Abstraction) *EntranceEntity {

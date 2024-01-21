@@ -82,6 +82,7 @@ func (s *prototype) CreateLease() {
 		//}
 		for range kac {
 		}
+		fmt.Println(s.retryCount, s.Config.MaxRetry)
 		if s.retryCount < s.Config.MaxRetry {
 			if s.retryBefore != nil {
 				s.retryBefore()

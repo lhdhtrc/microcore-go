@@ -17,6 +17,7 @@ type ConfigEntity struct {
 }
 
 type EntranceEntity struct {
+	Server *grpc.Server
 	logger logger.Abstraction
 }
 
@@ -77,6 +78,7 @@ func (s *EntranceEntity) CreateServer(handle func(server *grpc.Server), address 
 			return
 		}
 	}()
+	s.Server = server
 }
 
 func New(Logger logger.Abstraction) *EntranceEntity {

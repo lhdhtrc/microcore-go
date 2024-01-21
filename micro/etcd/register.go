@@ -83,7 +83,7 @@ func (s *prototype) CreateLease(retry func()) {
 		for range kac {
 		}
 		if s.retryCount < s.Config.MaxRetry {
-			time.Sleep(10 * time.Second)
+			time.Sleep(5 * time.Second)
 
 			s.retryCount++
 			s.logger.Info(fmt.Sprintf("retry create lease: %d/%d", s.retryCount, s.Config.MaxRetry))

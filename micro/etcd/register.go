@@ -66,15 +66,15 @@ func (s *prototype) CreateLease() {
 
 	grant, ge := s.cli.Grant(ctx, int64(s.Config.TTL))
 	if ge != nil {
-		s.logger.Error(fmt.Sprintf("%s %s", logPrefix, ge.Error()))
 		retry(s)
+		s.logger.Error(fmt.Sprintf("%s %s", logPrefix, ge.Error()))
 		return
 	}
 
 	kac, ke := s.cli.KeepAlive(s.ctx, grant.ID)
 	if ke != nil {
-		s.logger.Error(fmt.Sprintf("%s %s", logPrefix, ke.Error()))
 		retry(s)
+		s.logger.Error(fmt.Sprintf("%s %s", logPrefix, ke.Error()))
 		return
 	}
 

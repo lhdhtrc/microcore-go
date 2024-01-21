@@ -3,7 +3,9 @@ package micro
 type Abstraction interface {
 	Register(service string)
 	Deregister()
-	CreateLease(retry func())
+	CreateLease()
+	WithRetryBefore(func())
+	WithRetryAfter(func())
 
 	Watcher(config *[]string, service *map[string][]string)
 }

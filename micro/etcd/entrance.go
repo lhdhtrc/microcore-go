@@ -8,7 +8,9 @@ import (
 )
 
 type prototype struct {
-	Config *micro.ConfigEntity
+	Config      *micro.ConfigEntity
+	retryBefore func()
+	retryAfter  func()
 
 	retryCount uint32
 

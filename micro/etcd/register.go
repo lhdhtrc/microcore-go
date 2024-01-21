@@ -52,7 +52,7 @@ func (s *prototype) Deregister() {
 }
 
 // CreateLease etcd create service instance lease
-func (s *prototype) CreateLease(retry func()) {
+func (s *prototype) CreateLease() {
 	logPrefix := "create lease"
 	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 
@@ -83,12 +83,17 @@ func (s *prototype) CreateLease(retry func()) {
 		for range kac {
 		}
 		if s.retryCount < s.Config.MaxRetry {
+			if s.retryBefore != nil {
+				s.retryBefore()
+			}
 			time.Sleep(5 * time.Second)
 
 			s.retryCount++
 			s.logger.Info(fmt.Sprintf("retry create lease: %d/%d", s.retryCount, s.Config.MaxRetry))
-			s.CreateLease(retry)
-			retry()
+			s.CreateLease()
+			if s.retryAfter != nil {
+				s.retryAfter()
+			}
 		}
 		s.logger.Info("microservice stop lease alive success")
 	}()
@@ -96,4 +101,11 @@ func (s *prototype) CreateLease(retry func()) {
 	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
 
 	s.lease = grant.ID
+}
+
+func (s *prototype) WithRetryBefore(handle func()) {
+	s.retryBefore = handle
+}
+func (s *prototype) WithRetryAfter(handle func()) {
+	s.retryAfter = handle
 }

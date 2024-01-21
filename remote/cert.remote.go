@@ -19,7 +19,7 @@ func (s EntranceEntity) GetRemoteCert(dir string, config *base.TLSEntity) {
 
 	_, err := os.Stat(dirPath)
 	if os.IsNotExist(err) {
-		if e := os.MkdirAll(dirPath, 755); e != nil {
+		if e := os.MkdirAll(dirPath, 777); e != nil {
 			s.logger.Error(fmt.Sprintf("%s mkdir path %s", logPrefix, e.Error()))
 		}
 	}

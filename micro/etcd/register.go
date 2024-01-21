@@ -87,6 +87,7 @@ func (s *prototype) CreateLease(retry func()) {
 
 			s.retryCount++
 			s.logger.Info(fmt.Sprintf("retry create lease: %d/%d", s.retryCount, s.Config.MaxRetry))
+			s.CreateLease(retry)
 			retry()
 		}
 		s.logger.Info("microservice stop lease alive success")

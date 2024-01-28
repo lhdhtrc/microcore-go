@@ -21,7 +21,7 @@ func (s EntranceEntity) SetupMysql(config *ConfigEntity, tables *[]interface{}) 
 	clientOptions := mysql.Config{
 		Net:       "tcp",
 		Addr:      config.Address,
-		DBName:    config.DB,
+		DBName:    config.Database,
 		Loc:       time.Local,
 		ParseTime: true,
 	}

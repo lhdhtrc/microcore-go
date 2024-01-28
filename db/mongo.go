@@ -108,7 +108,7 @@ func (s EntranceEntity) SetupMongo(config *ConfigEntity) *mongo.Database {
 		return nil
 	}
 
-	db := client.Database(config.DB)
+	db := client.Database(config.Database)
 
 	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))
 

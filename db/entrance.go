@@ -11,8 +11,8 @@ type ConfigEntity struct {
 	Account  string `json:"account" bson:"account" yaml:"account" mapstructure:"account"`
 	Password string `json:"password" bson:"password" yaml:"password" mapstructure:"password"`
 
-	Address string `json:"address" yaml:"address" mapstructure:"address"`
-	DB      string `json:"db" yaml:"db" mapstructure:"db"`
+	Address  string `json:"address" yaml:"address" mapstructure:"address"`
+	Database string `json:"database" yaml:"database" mapstructure:"database"`
 
 	Mode bool `json:"mode" yaml:"mode" mapstructure:"mode"` // Mode is true cluster
 	Auth uint `json:"auth" yaml:"auth" mapstructure:"auth"` // Auth way, account+password / TLS

@@ -15,7 +15,6 @@ type ConfigEntity struct {
 	Database string `json:"database" yaml:"database" mapstructure:"database"`
 
 	Mode bool `json:"mode" yaml:"mode" mapstructure:"mode"` // Mode is true cluster
-	Auth uint `json:"auth" yaml:"auth" mapstructure:"auth"` // Auth way, account+password / TLS
 
 	MaxOpenConnects        int  `json:"max_open_connects" bson:"max_open_connects" yaml:"max_open_connects" mapstructure:"max_open_connects"`
 	MaxIdleConnects        int  `json:"max_idle_connects" bson:"max_idle_connects" yaml:"max_idle_connects" mapstructure:"max_idle_connects"`

@@ -26,32 +26,11 @@ func (s EntranceEntity) SetupMysql(config *ConfigEntity, tables *[]interface{}) 
 		ParseTime: true,
 	}
 
-	switch config.Auth {
-	case 1: // not auth
-		break
-	case 2: // account password
+	if config.Account != "" && config.Password != "" {
 		clientOptions.User = config.Account
 		clientOptions.Passwd = config.Password
-		break
-	case 3: // tls
-		clientOptions.User = config.Account
-		clientOptions.Passwd = config.Password
-
-		if config.Tls.CaCert == "" {
-			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no CA certificate found"))
-			return nil
-		}
-
-		if config.Tls.ClientCert == "" {
-			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no client certificate found"))
-			return nil
-		}
-
-		if config.Tls.ClientCertKey == "" {
-			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no client certificate key found"))
-			return nil
-		}
-
+	}
+	if config.Tls.CaCert != "" && config.Tls.ClientCert != "" && config.Tls.ClientCertKey != "" {
 		certPool := x509.NewCertPool()
 		CAFile, CAErr := os.ReadFile(config.Tls.CaCert)
 		if CAErr != nil {
@@ -77,7 +56,6 @@ func (s EntranceEntity) SetupMysql(config *ConfigEntity, tables *[]interface{}) 
 		}
 
 		clientOptions.TLSConfig = "custom"
-		break
 	}
 
 	var _default logger.Interface

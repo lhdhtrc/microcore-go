@@ -22,31 +22,13 @@ func (s EntranceEntity) SetupMongo(config *ConfigEntity) *mongo.Database {
 
 	var clientOptions options.ClientOptions
 
-	switch config.Auth {
-	case 1: // not auth
-		break
-	case 2: // account password
+	if config.Account != "" && config.Password != "" {
 		clientOptions.SetAuth(options.Credential{
 			Username: config.Account,
 			Password: config.Password,
 		})
-		break
-	case 3: // tls
-		if config.Tls.CaCert == "" {
-			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no CA certificate found"))
-			return nil
-		}
-
-		if config.Tls.ClientCert == "" {
-			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no client certificate found"))
-			return nil
-		}
-
-		if config.Tls.ClientCertKey == "" {
-			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no client certificate key found"))
-			return nil
-		}
-
+	}
+	if config.Tls.CaCert != "" && config.Tls.ClientCert != "" && config.Tls.ClientCertKey != "" {
 		certPool := x509.NewCertPool()
 		CAFile, CAErr := os.ReadFile(config.Tls.CaCert)
 		if CAErr != nil {
@@ -66,7 +48,6 @@ func (s EntranceEntity) SetupMongo(config *ConfigEntity) *mongo.Database {
 			RootCAs:      certPool,
 		}
 		clientOptions.SetTLSConfig(&tlsConfig)
-		break
 	}
 
 	uri := fmt.Sprintf("mongodb://%s", config.Address)

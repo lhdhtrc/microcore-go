@@ -22,29 +22,11 @@ func (s EntranceEntity) SetupEtcd(config *ConfigEntity) *clientv3.Client {
 		Context:     ctx,
 	}
 
-	switch config.Auth {
-	case 1: // not auth
-		break
-	case 2: // account password
+	if config.Account != "" && config.Password != "" {
 		clientOptions.Username = config.Account
 		clientOptions.Password = config.Password
-		break
-	case 3: // tls
-		if config.Tls.CaCert == "" {
-			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no CA certificate found"))
-			return nil
-		}
-
-		if config.Tls.ClientCert == "" {
-			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no server certificate found"))
-			return nil
-		}
-
-		if config.Tls.ClientCertKey == "" {
-			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, "no server certificate key found"))
-			return nil
-		}
-
+	}
+	if config.Tls.CaCert != "" && config.Tls.ClientCert != "" && config.Tls.ClientCertKey != "" {
 		tlsInfo := transport.TLSInfo{
 			CertFile:      config.Tls.ClientCert,
 			KeyFile:       config.Tls.ClientCertKey,
@@ -53,12 +35,10 @@ func (s EntranceEntity) SetupEtcd(config *ConfigEntity) *clientv3.Client {
 
 		tlsConfig, err := tlsInfo.ClientConfig()
 		if err != nil {
-			s.logger.Error(err.Error())
+			s.logger.Error(fmt.Sprintf("%s %s", logPrefix, err.Error()))
 			return nil
 		}
-
 		clientOptions.TLS = tlsConfig
-		break
 	}
 
 	if config.Mode { // cluster

@@ -6,24 +6,29 @@ import (
 	"fmt"
 	"github.com/lhdhtrc/microservice-go/micro"
 	clientv3 "go.etcd.io/etcd/client/v3"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
 )
 
 // Register etcd service register
-func (s *prototype) Register(service string) {
-	key := fmt.Sprintf("%s/%s/%d", s.Config.Namespace, service, s.lease)
-	val, _ := json.Marshal(micro.ValueEntity{
-		Name:      service,
-		Endpoints: s.Config.Address,
-	})
-	_, err := s.cli.Put(s.ctx, key, string(val), clientv3.WithLease(s.lease))
-	if err != nil {
-		s.logger.Error(err.Error())
-		return
+func (s *prototype) Register(prefix string, srv interface{}) {
+	ref := reflect.TypeOf(srv)
+	length := ref.NumMethod()
+	for i := 0; i < length; i++ {
+		key := fmt.Sprintf("%s/%s/%s/%d", s.Config.Namespace, prefix, ref.Method(i).Name, s.lease)
+		val, _ := json.Marshal(micro.ValueEntity{
+			Name:      ref.Method(i).Name,
+			Endpoints: s.Config.Address,
+		})
+		_, err := s.cli.Put(s.ctx, key, string(val), clientv3.WithLease(s.lease))
+		if err != nil {
+			s.logger.Error(err.Error())
+			return
+		}
+		s.logger.Info(fmt.Sprintf("register microservice: %s, %s", key, val))
 	}
-	s.logger.Info(fmt.Sprintf("register microservice: %s, %s", key, val))
 }
 
 // Deregister etcd service deregister

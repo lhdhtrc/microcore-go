@@ -14,7 +14,7 @@ type DBTableEntity struct {
 }
 
 type DBTableUUIDEntity struct {
-	ID        string         `json:"id" gorm:"primarykey;"`
+	ID        string         `json:"id" gorm:"primarykey;size:36;"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`

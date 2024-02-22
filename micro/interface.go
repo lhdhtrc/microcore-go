@@ -1,7 +1,7 @@
 package micro
 
 type Abstraction interface {
-	Register(service string)
+	Register(prefix string, srv interface{})
 	Deregister()
 	CreateLease()
 	WithRetryBefore(func())

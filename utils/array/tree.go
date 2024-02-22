@@ -2,16 +2,18 @@ package array
 
 import "reflect"
 
-func Tree[T interface{}](list []T) []T {
+func Tree[T interface{}](root T, list []T) []T {
 	var tree []T
+
+	if len(reflect.ValueOf(root).Elem().FieldByName("ID").String()) != 0 {
+		list = append(list, root)
+	}
 
 	// 预分配地图，提高性能 (可选)
 	parentMap := make(map[string][]T, len(list))
 
 	for _, node := range list {
 		nodeValue := reflect.ValueOf(node).Elem() // 获取节点的反射值
-
-		// 使用结构体标签 (可选)
 		parentId := nodeValue.FieldByName("ParentId").String()
 
 		if parentId == "" {
@@ -24,8 +26,6 @@ func Tree[T interface{}](list []T) []T {
 
 	for _, node := range list {
 		nodeValue := reflect.ValueOf(node).Elem()
-
-		// 使用结构体标签 (可选)
 		childrenField := nodeValue.FieldByName("Children")
 
 		// 处理无效或非切片类型的 Children 字段

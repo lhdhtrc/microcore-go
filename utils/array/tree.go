@@ -2,12 +2,8 @@ package array
 
 import "reflect"
 
-func Tree[T interface{}](root T, list []T) []T {
+func Tree[T interface{}](list []T) []T {
 	var tree []T
-
-	if len(reflect.ValueOf(root).Elem().FieldByName("ID").String()) != 0 {
-		list = append(list, root)
-	}
 
 	// 预分配地图，提高性能 (可选)
 	parentMap := make(map[string][]T, len(list))

@@ -36,7 +36,7 @@ func Tree[T interface{}](options TreeOptions) ([]*T, error) {
 	}
 
 	if !options.Lazy {
-		var parentId string
+		parentId := " AND parent_id IS NULL"
 		if options.Id != "" {
 			parentId = fmt.Sprintf(" AND parent_id = '%s'", options.Id)
 		}

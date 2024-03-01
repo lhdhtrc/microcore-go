@@ -17,7 +17,7 @@ func (s *prototype) Register(prefix string, srv interface{}) {
 	ref := reflect.TypeOf(srv)
 	length := ref.NumMethod()
 	for i := 0; i < length; i++ {
-		key := fmt.Sprintf("%s/%s/%s/%d", s.Config.Namespace, prefix, ref.Method(i).Name, s.lease)
+		key := fmt.Sprintf("%s%s/%s/%d", s.Config.Namespace, prefix, ref.Method(i).Name, s.lease)
 		val, _ := json.Marshal(micro.ValueEntity{
 			Name:      ref.Method(i).Name,
 			Endpoints: s.Config.Address,

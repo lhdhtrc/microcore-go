@@ -46,7 +46,7 @@ func (r *rawCodec) Unmarshal(data []byte, v interface{}) error {
 	return nil
 }
 func (r *rawCodec) Name() string {
-	return fmt.Sprintf("proxy>grpc>%s", r.parentCodec.Name())
+	return fmt.Sprintf("proxy-grpc-%s", r.parentCodec.Name())
 }
 
 // protoCodec 实现protobuf的默认codec

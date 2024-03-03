@@ -6,6 +6,8 @@
 - [db](db/README.md)
 - [micro](micro/README.md)
 - [remote](remote/README.md)
+- proxy
+  - [grpc](proxy/grpc/README.md)
 - utils
   - [array](utils/array/README.md)
   - [object](utils/object/README.md)

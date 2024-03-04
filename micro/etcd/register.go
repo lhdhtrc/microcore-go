@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/lhdhtrc/microservice-go/micro"
 	clientv3 "go.etcd.io/etcd/client/v3"
+	"google.golang.org/grpc"
 	"reflect"
 	"strconv"
 	"strings"
@@ -13,11 +14,11 @@ import (
 )
 
 // Register etcd service register
-func (s *prototype) Register(prefix string, srv interface{}) {
+func (s *prototype) Register(prefix string, srv interface{}, desc grpc.ServiceDesc) {
 	ref := reflect.TypeOf(srv)
 	length := ref.NumMethod()
 	for i := 0; i < length; i++ {
-		key := fmt.Sprintf("%s%s/%s/%d", s.Config.Namespace, prefix, ref.Method(i).Name, s.lease)
+		key := fmt.Sprintf("%s/%s/%s/%d", s.Config.Namespace, desc.ServiceName, ref.Method(i).Name, s.lease)
 		val, _ := json.Marshal(micro.ValueEntity{
 			Name:      ref.Method(i).Name,
 			Endpoints: s.Config.Address,

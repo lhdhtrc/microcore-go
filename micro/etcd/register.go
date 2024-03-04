@@ -14,7 +14,7 @@ import (
 )
 
 // Register etcd service register
-func (s *prototype) Register(prefix string, srv interface{}, desc grpc.ServiceDesc) {
+func (s *prototype) Register(srv interface{}, desc grpc.ServiceDesc) {
 	ref := reflect.TypeOf(srv)
 	length := ref.NumMethod()
 	for i := 0; i < length; i++ {

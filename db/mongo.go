@@ -62,7 +62,7 @@ func (s EntranceEntity) SetupMongo(config *ConfigEntity) *mongo.Database {
 
 	clientOptions.SetMaxConnecting(uint64(config.MaxOpenConnects))
 	clientOptions.SetMaxPoolSize(uint64(config.MaxIdleConnects))
-	clientOptions.SetMaxConnIdleTime(time.Second * time.Duration(config.MaxIdleConnects))
+	clientOptions.SetMaxConnIdleTime(time.Second * time.Duration(config.ConnMaxLifeTime))
 
 	if config.LoggerEnable {
 		clientOptions.Monitor = &event.CommandMonitor{

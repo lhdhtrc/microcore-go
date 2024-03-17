@@ -10,4 +10,5 @@ type ConfigEntity struct {
 type ValueEntity struct {
 	Name      string `json:"name"`
 	Endpoints string `json:"endpoints"`
+	Http      string `json:"http"`
 }

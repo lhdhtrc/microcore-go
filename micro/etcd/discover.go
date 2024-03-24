@@ -10,10 +10,10 @@ import (
 )
 
 // Watcher etcd service watcher
-func (s *prototype) Watcher(config *[]string, service *map[string][]string) {
+func (s *prototype) Watcher(config *[]string, service *map[string][]string, http *map[string]string) {
 	logPrefix := "[service_endpoint_change] service"
 	for _, prefix := range *config {
-		initService(prefix, s, service)
+		initService(prefix, s, service, http)
 
 		wc := s.cli.Watch(s.ctx, prefix, clientv3.WithPrefix(), clientv3.WithPrevKV())
 		go func() {
@@ -49,12 +49,16 @@ func (s *prototype) Watcher(config *[]string, service *map[string][]string) {
 						(*service)[key] = array.Unique[string](temp, func(index int, item string) string {
 							return item
 						})
+						if _, ok := (*http)[val.Http]; !ok {
+							(*http)[val.Http] = key
+						}
 						s.logger.Success(fmt.Sprintf("%s %s put endpoint, key: %s, endpoint: %s", logPrefix, val.Name, key, val.Endpoints))
 					// DELETE
 					case 1:
 						(*service)[key] = array.Filter((*service)[val.Name], func(index int, item string) bool {
 							return item != val.Endpoints
 						})
+						delete(*http, val.Http)
 						s.logger.Warning(fmt.Sprintf("%s %s delete endpoint, key: %s, endpoint: %s", logPrefix, val.Name, key, val.Endpoints))
 					}
 				}
@@ -64,7 +68,7 @@ func (s *prototype) Watcher(config *[]string, service *map[string][]string) {
 }
 
 // initService etcd service init
-func initService(prefix string, options *prototype, service *map[string][]string) {
+func initService(prefix string, options *prototype, service *map[string][]string, http *map[string]string) {
 	logPrefix := "service discover init service"
 	options.logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 
@@ -91,6 +95,9 @@ func initService(prefix string, options *prototype, service *map[string][]string
 		(*service)[key] = array.Unique[string](temp, func(index int, item string) string {
 			return item
 		})
+		if _, ok := (*http)[val.Http]; !ok {
+			(*http)[val.Http] = key
+		}
 	}
 
 	options.logger.Info(fmt.Sprintf("%s %s", logPrefix, "success ->"))

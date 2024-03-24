@@ -9,5 +9,5 @@ type Abstraction interface {
 	WithRetryBefore(func())
 	WithRetryAfter(func())
 
-	Watcher(config *[]string, service *map[string][]string)
+	Watcher(config *[]string, service *map[string][]string, http *map[string]string)
 }

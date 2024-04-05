@@ -14,7 +14,7 @@ import (
 )
 
 // Register etcd service register
-func (s *prototype) Register(srv interface{}, desc grpc.ServiceDesc, http map[string]string) {
+func (s *prototype) Register(srv interface{}, desc grpc.ServiceDesc) {
 	ref := reflect.TypeOf(srv)
 	length := ref.NumMethod()
 	for i := 0; i < length; i++ {
@@ -22,7 +22,6 @@ func (s *prototype) Register(srv interface{}, desc grpc.ServiceDesc, http map[st
 		key := fmt.Sprintf("%s/%s/%s/%d", s.Config.Namespace, desc.ServiceName, name, s.lease)
 		val, _ := json.Marshal(micro.ValueEntity{
 			Name:      ref.Method(i).Name,
-			Http:      http[name],
 			Endpoints: s.Config.Address,
 		})
 		_, err := s.cli.Put(s.ctx, key, string(val), clientv3.WithLease(s.lease))

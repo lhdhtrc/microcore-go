@@ -1,14 +1,12 @@
 package grpc
 
 import (
-	"context"
 	"fmt"
 	"github.com/lhdhtrc/microservice-go/logger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"net"
 	"strings"
-	"time"
 )
 
 type ConfigEntity struct {
@@ -22,9 +20,6 @@ type EntranceEntity struct {
 }
 
 func (s *EntranceEntity) Dial(endpoint []string, opt *ConfigEntity) *grpc.ClientConn {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
 	var index int
 	length := len(endpoint)
 	if length == 0 {
@@ -46,7 +41,7 @@ func (s *EntranceEntity) Dial(endpoint []string, opt *ConfigEntity) *grpc.Client
 		}
 	}
 
-	conn, err := grpc.DialContext(ctx, address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		s.logger.Error(fmt.Sprintf("the service endpoint is unavailable, error: %s", err.Error()))
 		return nil

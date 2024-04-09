@@ -67,13 +67,13 @@ func (s EntranceEntity) SetupMongo(config *ConfigEntity) *mongo.Database {
 	if config.LoggerEnable {
 		clientOptions.Monitor = &event.CommandMonitor{
 			Started: func(ctx context.Context, event *event.CommandStartedEvent) {
-				s.logger.Info(fmt.Sprintf("[MongoDB][RequestID:%d][database:%s] %s\n", event.RequestID, event.DatabaseName, event.Command))
+				s.logger.Info(fmt.Sprintf("[MongoDB][RequestID:%d][database:%s] %s", event.RequestID, event.DatabaseName, event.Command))
 			},
 			Succeeded: func(ctx context.Context, event *event.CommandSucceededEvent) {
-				s.logger.Success(fmt.Sprintf("[MongoDB][RequestID:%d] [%s] %s\n", event.RequestID, event.Duration.String(), event.Reply))
+				s.logger.Success(fmt.Sprintf("[MongoDB][RequestID:%d] [%s] %s", event.RequestID, event.Duration.String(), event.Reply))
 			},
 			Failed: func(ctx context.Context, event *event.CommandFailedEvent) {
-				s.logger.Error(fmt.Sprintf("[MongoDB][RequestID:%d] [%s] %s\n", event.RequestID, event.Duration.String(), event.Failure))
+				s.logger.Error(fmt.Sprintf("[MongoDB][RequestID:%d] [%s] %s", event.RequestID, event.Duration.String(), event.Failure))
 			},
 		}
 	}

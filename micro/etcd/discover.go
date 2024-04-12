@@ -3,8 +3,8 @@ package etcd
 import (
 	"encoding/json"
 	"fmt"
+	array2 "func/array"
 	"github.com/lhdhtrc/microservice-go/micro"
-	"github.com/lhdhtrc/microservice-go/utils/array"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"strings"
 )
@@ -46,13 +46,13 @@ func (s *prototype) Watcher(config *[]string, service *map[string][]string) {
 					// PUT，新增或替换
 					case 0:
 						temp := append((*service)[key], val.Endpoints)
-						(*service)[key] = array.Unique[string](temp, func(index int, item string) string {
+						(*service)[key] = array2.Unique[string](temp, func(index int, item string) string {
 							return item
 						})
 						s.logger.Success(fmt.Sprintf("%s %s put endpoint, key: %s, endpoint: %s", logPrefix, val.Name, key, val.Endpoints))
 					// DELETE
 					case 1:
-						(*service)[key] = array.Filter((*service)[val.Name], func(index int, item string) bool {
+						(*service)[key] = array2.Filter((*service)[val.Name], func(index int, item string) bool {
 							return item != val.Endpoints
 						})
 						s.logger.Warning(fmt.Sprintf("%s %s delete endpoint, key: %s, endpoint: %s", logPrefix, val.Name, key, val.Endpoints))
@@ -88,7 +88,7 @@ func initService(prefix string, options *prototype, service *map[string][]string
 		key = strings.Join(st, "/")
 
 		temp := append((*service)[key], val.Endpoints)
-		(*service)[key] = array.Unique[string](temp, func(index int, item string) string {
+		(*service)[key] = array2.Unique[string](temp, func(index int, item string) string {
 			return item
 		})
 	}

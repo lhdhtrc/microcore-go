@@ -9,8 +9,8 @@
 - proxy
   - [grpc](proxy/grpc/README.md)
 - utils
-  - [array](utils/array/README.md)
-  - [object](utils/object/README.md)
+  - [array](../func/array/README.md)
+  - [object](../func/object/README.md)
   - [date](utils/date/README.md)
   - [process](utils/process/README.md)
   - [gorm](utils/gorm/README.md)

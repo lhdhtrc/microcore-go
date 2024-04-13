@@ -1,17 +1,11 @@
-![](http://minio.lhdht.cn/public/logo.jpg)
+## Microservice Golang Core
+![](https://minio.lhdht.cn/public/logo.png)
 
-## Lhdht Microservice Golang Version
+### Supported registries
+- Etcd
+  - Register
+  - Discover
 
-### module
-- [db](db/README.md)
-- [micro](micro/README.md)
-- [remote](remote/README.md)
-- proxy
-  - [grpc](proxy/grpc/README.md)
-- utils
-  - [array](../func/array/README.md)
-  - [object](../func/object/README.md)
-  - [date](utils/date/README.md)
-  - [process](utils/process/README.md)
-  - [gorm](utils/gorm/README.md)
-  - [mongo](utils/mongo/README.md)
+### Grpc Core
+- Dial
+- CreateServer

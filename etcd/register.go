@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/lhdhtrc/microservice-go/micro"
+	"github.com/lhdhtrc/microservice-go/model"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 	"reflect"
@@ -20,7 +20,7 @@ func (s *prototype) Register(srv interface{}, desc grpc.ServiceDesc) {
 	for i := 0; i < length; i++ {
 		name := ref.Method(i).Name
 		key := fmt.Sprintf("%s/%s/%s/%d", s.Config.Namespace, desc.ServiceName, name, s.lease)
-		val, _ := json.Marshal(micro.ValueEntity{
+		val, _ := json.Marshal(model.ValueEntity{
 			Name:      ref.Method(i).Name,
 			Endpoints: s.Config.Address,
 		})

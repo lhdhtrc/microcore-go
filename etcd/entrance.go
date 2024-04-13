@@ -2,13 +2,13 @@ package etcd
 
 import (
 	"context"
-	"github.com/lhdhtrc/microservice-go/logger"
-	"github.com/lhdhtrc/microservice-go/micro"
+	"github.com/lhdhtrc/microservice-go/model"
 	clientv3 "go.etcd.io/etcd/client/v3"
+	"go.uber.org/zap"
 )
 
 type prototype struct {
-	Config      *micro.ConfigEntity
+	Config      *model.ConfigEntity
 	retryBefore func()
 	retryAfter  func()
 
@@ -20,10 +20,10 @@ type prototype struct {
 	cli   *clientv3.Client
 	lease clientv3.LeaseID
 
-	logger logger.Abstraction
+	logger *zap.Logger
 }
 
-func New(cli *clientv3.Client, logger logger.Abstraction, config *micro.ConfigEntity) micro.Abstraction {
+func New(cli *clientv3.Client, logger *zap.Logger, config *model.ConfigEntity) model.Abstraction {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	config.MaxRetry = config.MaxRetry | 5

@@ -3,8 +3,8 @@ package etcd
 import (
 	"encoding/json"
 	"fmt"
-	array2 "func/array"
-	"github.com/lhdhtrc/microservice-go/micro"
+	"github.com/lhdhtrc/func-go/array"
+	"github.com/lhdhtrc/microservice-go/model"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"strings"
 )
@@ -22,7 +22,7 @@ func (s *prototype) Watcher(config *[]string, service *map[string][]string) {
 					var (
 						bytes []byte
 						key   string
-						val   micro.ValueEntity
+						val   model.ValueEntity
 					)
 
 					if e.PrevKv != nil {
@@ -34,7 +34,7 @@ func (s *prototype) Watcher(config *[]string, service *map[string][]string) {
 					}
 
 					if err := json.Unmarshal(bytes, &val); err != nil {
-						s.logger.Warning(err.Error())
+						s.logger.Warn(err.Error())
 						continue
 					}
 
@@ -46,16 +46,16 @@ func (s *prototype) Watcher(config *[]string, service *map[string][]string) {
 					// PUT，新增或替换
 					case 0:
 						temp := append((*service)[key], val.Endpoints)
-						(*service)[key] = array2.Unique[string](temp, func(index int, item string) string {
+						(*service)[key] = array.Unique[string](temp, func(index int, item string) string {
 							return item
 						})
-						s.logger.Success(fmt.Sprintf("%s %s put endpoint, key: %s, endpoint: %s", logPrefix, val.Name, key, val.Endpoints))
+						s.logger.Info(fmt.Sprintf("%s %s put endpoint, key: %s, endpoint: %s", logPrefix, val.Name, key, val.Endpoints))
 					// DELETE
 					case 1:
-						(*service)[key] = array2.Filter((*service)[val.Name], func(index int, item string) bool {
+						(*service)[key] = array.Filter((*service)[val.Name], func(index int, item string) bool {
 							return item != val.Endpoints
 						})
-						s.logger.Warning(fmt.Sprintf("%s %s delete endpoint, key: %s, endpoint: %s", logPrefix, val.Name, key, val.Endpoints))
+						s.logger.Warn(fmt.Sprintf("%s %s delete endpoint, key: %s, endpoint: %s", logPrefix, val.Name, key, val.Endpoints))
 					}
 				}
 			}
@@ -77,7 +77,7 @@ func initService(prefix string, options *prototype, service *map[string][]string
 	for _, item := range res.Kvs {
 		key := string(item.Key)
 
-		var val micro.ValueEntity
+		var val model.ValueEntity
 		if err := json.Unmarshal(item.Value, &val); err != nil {
 			options.logger.Error(fmt.Sprintf("%s %s", logPrefix, err.Error()))
 			return
@@ -88,7 +88,7 @@ func initService(prefix string, options *prototype, service *map[string][]string
 		key = strings.Join(st, "/")
 
 		temp := append((*service)[key], val.Endpoints)
-		(*service)[key] = array2.Unique[string](temp, func(index int, item string) string {
+		(*service)[key] = array.Unique[string](temp, func(index int, item string) string {
 			return item
 		})
 	}

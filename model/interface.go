@@ -1,4 +1,4 @@
-package micro
+package model
 
 import "google.golang.org/grpc"
 

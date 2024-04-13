@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"fmt"
-	"github.com/lhdhtrc/microservice-go/logger"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"net"
@@ -16,14 +16,14 @@ type ConfigEntity struct {
 
 type EntranceEntity struct {
 	Server *grpc.Server
-	logger logger.Abstraction
+	logger *zap.Logger
 }
 
 func (s *EntranceEntity) Dial(endpoint []string, opt *ConfigEntity) *grpc.ClientConn {
 	var index int
 	length := len(endpoint)
 	if length == 0 {
-		s.logger.Warning("no service endpoint are available")
+		s.logger.Warn("no service endpoint are available")
 		return nil
 	} else if length == 1 {
 		index = 0
@@ -76,8 +76,6 @@ func (s *EntranceEntity) CreateServer(handle func(server *grpc.Server), address 
 	s.Server = server
 }
 
-func New(Logger logger.Abstraction) *EntranceEntity {
-	entity := new(EntranceEntity)
-	entity.logger = Logger
-	return entity
+func New(logger *zap.Logger) *EntranceEntity {
+	return &EntranceEntity{logger: logger}
 }

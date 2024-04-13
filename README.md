@@ -1,7 +1,7 @@
 ## Microservice Golang Core
 A minimalist microservices framework
 
-[](https://minio.lhdht.cn/public/logo-object.png)
+<img src="https://minio.lhdht.cn/public/logo-object.png">
 
 ### Supported registries
 - Etcd

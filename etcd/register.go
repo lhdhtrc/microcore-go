@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/lhdhtrc/microservice-go/model"
+	"github.com/lhdhtrc/microcore-go/model"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 	"reflect"

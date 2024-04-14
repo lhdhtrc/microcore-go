@@ -2,7 +2,7 @@ package etcd
 
 import (
 	"context"
-	"github.com/lhdhtrc/microservice-go/model"
+	"github.com/lhdhtrc/microcore-go/model"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.uber.org/zap"
 )

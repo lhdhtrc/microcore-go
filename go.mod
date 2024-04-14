@@ -1,12 +1,12 @@
-module github.com/lhdhtrc/microservice-go
+module github.com/lhdhtrc/microcore-go
 
 go 1.22.1
 
 require (
-	github.com/lhdhtrc/func-go v0.0.3
+	github.com/lhdhtrc/func-go v0.0.6
 	go.etcd.io/etcd/client/v3 v3.5.13
 	go.uber.org/zap v1.27.0
-	google.golang.org/grpc v1.63.0
+	google.golang.org/grpc v1.63.2
 )
 
 require (

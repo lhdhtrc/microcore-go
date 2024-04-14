@@ -1,5 +1,5 @@
-## Microservice Golang Core
-A minimalist microservices framework
+## Golang Microservice Core
+A minimalist microservices core framework
 
 <img src="https://minio.lhdht.cn/public/logo-object.png">
 

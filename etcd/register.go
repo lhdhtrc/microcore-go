@@ -14,7 +14,7 @@ import (
 )
 
 // Register etcd service register
-func (s *prototype) Register(srv interface{}, desc grpc.ServiceDesc) {
+func (s *MicroEtcdEntity) Register(srv interface{}, desc grpc.ServiceDesc) {
 	ref := reflect.TypeOf(srv)
 	length := ref.NumMethod()
 	for i := 0; i < length; i++ {
@@ -34,7 +34,7 @@ func (s *prototype) Register(srv interface{}, desc grpc.ServiceDesc) {
 }
 
 // Deregister etcd service deregister
-func (s *prototype) Deregister() {
+func (s *MicroEtcdEntity) Deregister() {
 	if _, err := s.cli.Revoke(s.ctx, s.lease); err != nil {
 		s.logger.Error(err.Error())
 		return
@@ -59,7 +59,7 @@ func (s *prototype) Deregister() {
 }
 
 // CreateLease etcd create service instance lease
-func (s *prototype) CreateLease() {
+func (s *MicroEtcdEntity) CreateLease() {
 	logPrefix := "create lease"
 	s.logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 
@@ -100,14 +100,14 @@ func (s *prototype) CreateLease() {
 	s.lease = grant.ID
 }
 
-func (s *prototype) WithRetryBefore(handle func()) {
+func (s *MicroEtcdEntity) WithRetryBefore(handle func()) {
 	s.retryBefore = handle
 }
-func (s *prototype) WithRetryAfter(handle func()) {
+func (s *MicroEtcdEntity) WithRetryAfter(handle func()) {
 	s.retryAfter = handle
 }
 
-func retry(s *prototype) {
+func retry(s *MicroEtcdEntity) {
 	fmt.Println(s.retryCount, s.Config.MaxRetry)
 	if s.retryCount < s.Config.MaxRetry {
 		if s.retryBefore != nil {

@@ -10,7 +10,7 @@ import (
 )
 
 // Watcher etcd service watcher
-func (s *prototype) Watcher(config *[]string, service *map[string][]string) {
+func (s *MicroEtcdEntity) Watcher(config *[]string, service *map[string][]string) {
 	logPrefix := "[service_endpoint_change] service"
 	for _, prefix := range *config {
 		initService(prefix, s, service)
@@ -64,7 +64,7 @@ func (s *prototype) Watcher(config *[]string, service *map[string][]string) {
 }
 
 // initService etcd service init
-func initService(prefix string, options *prototype, service *map[string][]string) {
+func initService(prefix string, options *MicroEtcdEntity, service *map[string][]string) {
 	logPrefix := "service discover init service"
 	options.logger.Info(fmt.Sprintf("%s %s", logPrefix, "start ->"))
 

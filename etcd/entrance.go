@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type prototype struct {
+type MicroEtcdEntity struct {
 	Config      *model.ConfigEntity
 	retryBefore func()
 	retryAfter  func()
@@ -23,13 +23,13 @@ type prototype struct {
 	logger *zap.Logger
 }
 
-func New(cli *clientv3.Client, logger *zap.Logger, config *model.ConfigEntity) model.Abstraction {
+func New(cli *clientv3.Client, logger *zap.Logger, config *model.ConfigEntity) model.MicroCoreInterface {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	config.MaxRetry = config.MaxRetry | 5
 	config.TTL = config.TTL | 5
 
-	return &prototype{
+	return &MicroEtcdEntity{
 		Config: config,
 		ctx:    ctx,
 		cancel: cancel,

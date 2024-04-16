@@ -14,12 +14,12 @@ type ConfigEntity struct {
 	Address string `json:"address"` // current service deploy address
 }
 
-type EntranceEntity struct {
+type CoreEntity struct {
 	Server *grpc.Server
 	logger *zap.Logger
 }
 
-func (s *EntranceEntity) Dial(endpoint []string, opt *ConfigEntity) *grpc.ClientConn {
+func (s *CoreEntity) Dial(endpoint []string, opt *ConfigEntity) *grpc.ClientConn {
 	var index int
 	length := len(endpoint)
 	if length == 0 {
@@ -50,7 +50,7 @@ func (s *EntranceEntity) Dial(endpoint []string, opt *ConfigEntity) *grpc.Client
 	return conn
 }
 
-func (s *EntranceEntity) CreateServer(handle func(server *grpc.Server), address string) {
+func (s *CoreEntity) CreateServer(handle func(server *grpc.Server), address string) {
 	logPrefix := "setup grpc server"
 	s.logger.Info(fmt.Sprintf("%s %s %s", logPrefix, address, "start ->"))
 
@@ -76,6 +76,6 @@ func (s *EntranceEntity) CreateServer(handle func(server *grpc.Server), address 
 	s.Server = server
 }
 
-func New(logger *zap.Logger) *EntranceEntity {
-	return &EntranceEntity{logger: logger}
+func New(logger *zap.Logger) *CoreEntity {
+	return &CoreEntity{logger: logger}
 }

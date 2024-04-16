@@ -2,7 +2,7 @@ package model
 
 import "google.golang.org/grpc"
 
-type Abstraction interface {
+type MicroCoreInterface interface {
 	Register(srv interface{}, desc grpc.ServiceDesc)
 	Deregister()
 	CreateLease()

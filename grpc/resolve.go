@@ -21,9 +21,9 @@ type grpcResolver struct {
 }
 
 func (r *grpcResolver) ResolveNow(o resolver.ResolveNowOptions) {
-	addrStrs := r.addrStore[r.target.Endpoint]
-	addrList := make([]resolver.Address, len(addrStrs))
-	for i, s := range addrStrs {
+	addrStr := r.addrStore[r.target.Endpoint()]
+	addrList := make([]resolver.Address, len(addrStr))
+	for i, s := range addrStr {
 		addrList[i] = resolver.Address{Addr: s}
 	}
 	r.cc.UpdateState(resolver.State{Addresses: addrList})
